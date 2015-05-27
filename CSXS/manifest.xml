@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ExtensionManifest ExtensionBundleId="com.indyimaging" ExtensionBundleName="Prepress Bundle" ExtensionBundleVersion="1.0" Version="5.0">
+    <ExtensionList>
+        <Extension Id="com.indyimaging.pressbot" Version="2.0"/>
+        <Extension Id="com.indyimaging.swatchmaker" Version="1.0"/>
+    </ExtensionList>
+    <ExecutionEnvironment>
+        <HostList>
+            <Host Name="ILST" Version="[18.0,18.9]"/>
+        </HostList>
+        <LocaleList>
+            <Locale Code="All"/>
+        </LocaleList>
+        <RequiredRuntimeList>
+            <RequiredRuntime Name="CSXS" Version="5.0"/>
+        </RequiredRuntimeList>
+    </ExecutionEnvironment>
+    <DispatchInfoList>
+        <Extension Id="com.indyimaging.pressbot">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./index_pressbot.html</MainPath>
+                    <ScriptPath>./host/pressbot_ext.jsx</ScriptPath>
+                </Resources>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>PressBot</Menu>
+                    <Geometry>
+                        <Size>
+                            <Height>310</Height>
+                            <Width>515</Width>
+                        </Size>
+                        <MaxSize>
+                            <Height>310</Height>
+                            <Width>515</Width>
+                        </MaxSize>
+                        <MinSize>
+                            <Height>310</Height>
+                            <Width>515</Width>
+                        </MinSize>
+                    </Geometry>
+                    <Icons>
+                        <Icon Type="Normal">./img/icon_pressbot.png</Icon>
+                        <Icon Type="RollOver">./img/icon_pressbot.png</Icon>
+                        <Icon Type="Disabled">./img/icon_pressbot.png</Icon>
+                        <Icon Type="DarkNormal">./img/icon_pressbot.png</Icon>
+                        <Icon Type="DarkRollOver">./img/icon_pressbot.png</Icon>
+                    </Icons>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+        <Extension Id="com.indyimaging.swatchmaker">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./index_swatchmaker.html</MainPath>
+                    <ScriptPath>./host/swatchmaker_ext.jsx</ScriptPath>
+                </Resources>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>SwatchMaker</Menu>
+                    <Geometry>
+                        <Size>
+                            <Height>175</Height>
+                            <Width>210</Width>
+                        </Size>
+                        <MaxSize>
+                            <Height>175</Height>
+                            <Width>210</Width>
+                        </MaxSize>
+                        <MinSize>
+                            <Height>175</Height>
+                            <Width>210</Width>
+                        </MinSize>
+                    </Geometry>
+                    <Icons>
+                        <Icon Type="Normal">./img/icon_swatchmaker.png</Icon>
+                        <Icon Type="RollOver">./img/icon_swatchmaker.png</Icon>
+                        <Icon Type="Disabled">./img/icon_swatchmaker.png</Icon>
+                        <Icon Type="DarkNormal">./img/icon_swatchmaker.png</Icon>
+                        <Icon Type="DarkRollOver">./img/icon_swatchmaker.png</Icon>
+                    </Icons>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+    </DispatchInfoList>
+</ExtensionManifest>

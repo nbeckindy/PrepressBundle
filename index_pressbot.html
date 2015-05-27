@@ -1,0 +1,283 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/boilerplate.css"/>
+        <link id="hostStyle" rel="stylesheet" href="css/styles.css"/>
+        <script src="js/CSInterface-5.2.js"></script>
+        <script src="js/thememanager.js"></script>
+        <script src="js/jquery-2.1.3.js"></script>
+        <style>
+            hr {
+                height:0;
+                border-top:1px solid #373737;
+                border-bottom:1px solid #565656;
+                margin:0px;
+            }
+            div {
+                margin:5px;
+            }
+            p {
+                margin-bottom: 2px;
+            }
+            div.source, div.finishing, div.media {
+                height:270px;
+                border:1px solid #2f2f2f;
+                float:left;
+            }
+            p.center {
+                margin-left:auto;
+                margin-right:auto;
+                width:70%;
+            }
+            table, td, th {
+                border: 1px solid #2f2f2f;
+                padding: 1px;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100px;
+                height: 100px;
+                color: #dddddd;
+            }
+            tr:last-child {
+                height: 100%;
+            }
+            th {
+                background-color: #494949;
+                font-weight:bold;
+            }
+            td {
+                background-color: #595959;
+                font-weight:normal;
+                height: 10px;
+            }
+            .left {
+                text-align: left;
+            }
+            .right {
+                text-align: right;
+            }
+            .bold {
+                font-weight:bold;
+            }
+            .normal {
+                font-weight:normal;
+            }
+            .center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            button:disabled, button:disabled:hover {
+                background-color: #777777;
+                color: #505050;
+                cursor: auto;
+            }
+            fieldset {
+                border: 1px solid #2f2f2f;
+            }
+            input {
+                background-color: #a2a2a2;
+                border: 1px solid #2f2f2f;
+                height: 18px;
+                width: 30px;
+                padding: 4px;
+                display:inline;
+                vertical-align:middle;
+            }
+            select {
+                background-color: #a2a2a2;
+                border: 1px solid #2f2f2f;
+                width: 100px;
+                overflow: scroll;
+                -webkit-appearance: none;
+                -webkit-border-radius: 0px;
+                display:inline;
+                vertical-align:middle;
+            }
+            select:disabled {
+                background-color: #777777;
+                color: #505050;
+            }
+            select.spacing, select.matType, select.bleed {
+                width: 75px;
+                height: 17px;
+                margin: 2px;
+                background-image: url(./img/select_button.png);
+                background-position: 100% center;
+                background-repeat: no-repeat;
+                -webkit-padding-start: 3px;
+            }
+            select.spacing:hover, select.matType:hover, select.bleed:hover {
+                background-image: url(./img/select_button_hover.png);
+                background-position: 100% center;
+                background-repeat: no-repeat;
+            }
+            button.constrain_disabled {
+                background:url(./img/constrain_off.png) no-repeat;
+                border:none;
+                width: 24px;
+                height: 24px;
+            }
+            button.constrain_enabled {
+                background:url(./img/constrain_on.png) no-repeat;
+                border:none;
+                width: 24px;
+                height: 24px;
+            }
+            button.constrain_disabled:hover {
+                background:url(./img/constrain_off_hover.png) no-repeat;
+            }
+            button.constrain_disabled:active {
+                background:url(./img/constrain_on_hover.png) no-repeat;
+            }
+            button.constrain_enabled:hover {
+                background:url(./img/constrain_on_hover.png) no-repeat;
+            }
+            button.constrain_enabled:active {
+                background:url(./img/constrain_off_hover.png) no-repeat;
+            }
+            :focus {
+                outline-color: #e98b2e;
+                outline-style: solid;
+                outline-width: 1px;
+            }
+            input[type="text"]:disabled {
+                background: #777777;
+                color: #505050;
+            }
+            input[type="checkbox"] {
+                display: none;
+            }
+            input[type="checkbox"] + label span {
+                display:inline-block;
+                width: 14px;
+                height: 13px;
+                background:url(./img/check_off.png) left top no-repeat;
+            }
+            input[type="checkbox"] + label span:hover {
+                background:url(./img/check_off_hover.png) left top no-repeat;
+            }
+            input[type="checkbox"] + label span:active {
+                background:url(./img/check_off_down.png) left top no-repeat;
+            }
+            input[type="checkbox"]:checked + label span {
+                background:url(./img/check_on.png) left top no-repeat;
+            }
+            input[type="checkbox"]:checked + label span:hover {
+                background:url(./img/check_on_hover.png) left top no-repeat;
+            }
+            input[type="checkbox"]:checked + label span:active {
+                background:url(./img/check_on_down.png) left top no-repeat;
+            }
+        </style>
+    </head>
+    <body class="hostElt">
+        <div class="source">
+            <div>
+                <p class="bold">Import:</p>
+                <button type="button" class="hostButton" id="add" style="display:inline">+</button>
+                <button type="button" class="hostButton" id="remove" style="display:inline">-</button>
+                <button type="button" class="hostButton" id="allOpen">Opened</button>
+            </div>
+            <div>
+                <select id="selectSource" multiple size="13">
+                </select>
+            </div>
+            <div>
+                <p class="bold">Nesting:</p>
+                <button type="button" class="hostButton" id="nest" style="display:inline">Add</button>
+                <button type="button" class="hostButton" id="unnest">Drop</button>
+            </div>
+        </div>
+        <div class="finishing" id="finishingDiv">
+            <div>
+                <span class="bold">Finished Size: </span><span class="normal" id="finDims"></span>
+            </div>
+            <div>
+                <p class="bold">Cut Path Offset:</p>
+                T <input type="text" id="offsetTop"> B <input type="text" id="offsetBottom">
+                L <input type="text" id="offsetLeft"> R <input type="text" id="offsetRight">
+                <button type="button" class="constrain_disabled" id="offsetConstrain" style="display:inline"><br>
+                <!-- <select class="bleed" id="bleed" style="width: 50px">
+                    <option value="0">0"</option>
+                    <option value="-0.125">-1/8"</option>
+                    <option value="-0.25">-1/4"</option>
+                    <option value="-0.5">-1/2"</option>
+                    <option value ="-1">-1"</option>
+                </select>
+                <p class="bold">Finished Size:</p>
+                Height: <input type="text" id="finHeight"> Width: <input type="text" id="finWidth"><br>
+                <input type="checkbox" id="useArtboard"><label for="useArtboard"><span></span> Use Document Artboard</label>-->
+            </div>
+            <hr>
+            <div>
+                <input type="checkbox" id="gromCheck" checked><label for="gromCheck"><span></span></label><span class="bold"> Grommets:</span><br>
+                <select class="spacing" id="gromVSpacing">
+                    <option value="distance">Distance</option>
+                    <option value="quantity">Quantity</option>
+                </select>
+                T <input type="text" id="gromTop"> B <input type="text" id="gromBottom"><br>
+            </div>
+            <div>
+                <select class="spacing" id="gromHSpacing">
+                    <option value="distance">Distance</option>
+                    <option value="quantity">Quantity</option>
+                </select>
+                L <input type="text" id="gromLeft"> R <input type="text" id="gromRight">
+                <button type="button" class="constrain_disabled" id="gromConstrain" style="display:inline"><br>
+            </div>
+            <hr>
+            <div>
+                <input type="checkbox" id="pockCheck" checked><label for="pockCheck"><span></span></label><span class="bold"> Pockets:</span><br>
+                T <input type="text" id="pockTop"> B <input type="text" id="pockBottom">
+                L <input type="text" id="pockLeft"> R <input type="text" id="pockRight">
+                <button type="button" class="constrain_disabled" id="pockConstrain" style="display:inline"><br>
+            </div>
+            <hr>
+            <div>
+                Quantity: <input type="text" id="quantity"><br>
+                <input type="checkbox" id="rotate"><label for="rotate"><span></span> Rotate 90&deg;</label><br>
+            </div>
+            <hr>
+            <div style="text-align:center">
+                <button type="button" class="hostButton" id="apply" style="margin:auto">Apply Settings</button>
+            </div>
+        </div>
+        <div class="media">
+            <div>
+                <p class="bold">Material Size:</p>
+                Width: <input type="text" id="matWidth"> Height: <input type="text" id="matHeight" disabled="true"> <br>
+                Type: <select class="matType" id="matType">
+                    <option value="roll" selected>Roll</option>
+                    <option value="rigid">Rigid</option>
+                </select>
+            </div>
+            <hr>
+            <div>
+                Regmark Density: <select class="matType" id="regDensity" style="width: 60px">
+                    <option value="36">Low</option>
+                    <option value="24">Medium</option>
+                    <option value="12">High</option>
+                </select><br>
+                1/2" Padding:
+                <input type="checkbox" id="perimPaddingTB"><label for="perimPaddingTB"><span></span> T&amp;B</label>
+                <input type="checkbox" id="perimPaddingLR"><label for="perimPaddingLR"><span></span> L&amp;R</label>
+            </div>
+            <div>
+                Scale: <input type="text" id="scale"><br>
+                <input type="checkbox" id="perimStroke"><label for="perimStroke"><span></span> 1px perimeter stroke</label><br>
+                <input type="checkbox" id="zund"><label for="zund"><span></span> Set up for Zund</label><br>
+                <input type="checkbox" id="saveOut"><label for="saveOut"><span></span> Save out print &amp; cut files</label>
+            </div>
+        </div>
+        <div style="clear:both; text-align:center">
+            <p style="margin:auto">
+                <button type="button" class="hostButton" id="confirm" style="display:inline">Produce</button>
+                <button type="button" class="hostButton" id="cancel" style="display:inline">Clear</button><br>
+                <!-- <input type="checkbox" id="saveSettings"><label for="saveSettings"><span></span> Save settings as default</label> -->
+            </p>
+        </div>
+    </body>
+    <script src="js/main_pressbot.js"></script>
+</html>

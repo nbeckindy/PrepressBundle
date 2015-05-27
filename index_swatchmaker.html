@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/boilerplate.css"/>
+        <link id="hostStyle" rel="stylesheet" href="css/styles.css"/>
+        <script src="js/CSInterface-5.2.js"></script>
+        <script src="js/thememanager.js"></script>
+        <style>
+            html {
+                overflow-y: hidden;
+            }
+            hr {
+                height:0;
+                border-top:1px solid #373737;
+                border-bottom:1px solid #565656;
+                margin:0px;
+            }
+            div {
+                margin:3px;
+            }
+            p {
+                height:23px;
+                line-height:23px;
+            }
+            .bold {
+                font-weight:bold;
+            }
+            .hidden {
+                display:none;
+            }
+            .visible {
+                display:block;
+            }
+            input[type="text"] {
+                background-color: #a2a2a2;
+                border: 1px solid #2f2f2f;
+                height: 18px;
+                padding: 4px;
+            }
+            ::-webkit-input-placeholder{
+                color: #777777;
+            }
+            select {
+                background-color: #a2a2a2;
+                border: 1px solid #2f2f2f;
+                -webkit-appearance: none;
+                -webkit-border-radius: 0px;
+                cursor:pointer;
+                background-image: url(./img/select_button.png);
+                background-position: 100% center;
+                background-repeat: no-repeat;
+                -webkit-padding-start: 3px;
+            }
+            select:disabled {
+                background-color: #777777;
+                color: #505050;
+            }
+            select.swatch {
+                width: 60px;
+                height: 17px;
+                margin: 2px;
+            }
+            select.gamut {
+                width: 70px;
+                height: 17px;
+                margin: 2px;
+            }
+            select.swatch:hover {
+                background-image: url(./img/select_button_hover.png);
+                background-position: 100% center;
+                background-repeat: no-repeat;
+            }
+            select.swatch:active {
+                background-image: url(./img/select_button_active_hover.png);
+                background-position: 100% center;
+                background-repeat: no-repeat;
+            }
+            :focus {
+                outline-color: #e98b2e;
+                outline-style: solid;
+                outline-width: 1px;
+            }
+            input[type="checkbox"] {
+                display: none;
+            }
+            input[type="checkbox"] + label span {
+                display:inline-block;
+                width: 14px;
+                height: 13px;
+                background:url(./img/check_off.png) left top no-repeat;
+            }
+            input[type="checkbox"] + label span:hover {
+                background:url(./img/check_off_hover.png) left top no-repeat;
+            }
+            input[type="checkbox"] + label span:active {
+                background:url(./img/check_off_down.png) left top no-repeat;
+            }
+            input[type="checkbox"]:checked + label span {
+                background:url(./img/check_on.png) left top no-repeat;
+            }
+            input[type="checkbox"]:checked + label span:hover {
+                background:url(./img/check_on_hover.png) left top no-repeat;
+            }
+            input[type="checkbox"]:checked + label span:active {
+                background:url(./img/check_on_down.png) left top no-repeat;
+            }
+            input[type="checkbox"]:disabled + label span,
+            input[type="checkbox"]:disabled + label span:hover,
+            input[type="checkbox"]:disabled + label span:active {
+                background:url(./img/check_off_disabled.png) left top no-repeat;
+            }
+            input[type="range"]{
+                -webkit-appearance: none;
+                display:inline;
+                width:75px;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none !important;
+                border-radius:2px;
+                height:12px;
+                width:12px;
+                border: 1px solid #2f2f2f;
+                background-color:#484848;
+                margin-top:-4px;
+                -webkit-box-shadow:0 1px 1px #2f2f2f;
+            }
+            input[type="range"]::-webkit-slider-runnable-track {
+                height:4px;
+                width:75px;
+                background:#353535;
+                -webkit-box-shadow:inset 0 0 1px #272727;
+                cursor:pointer;
+            }
+        </style>
+    </head>
+    <body class="hostElt">
+        <div id="wrap" style="width:200px;">
+            <div class="hostFont" id="labels" style="text-align:right; float:left; width:65px; margin-right:0px;">
+                <p>Type:</p>
+                <p>Values:</p>
+                <p class="visible">Channels:</p>
+                <p class="visible"></p>
+                <p class="visible">Gamut:</p>
+                <p class="visible">Step Range:</p>
+            </div>
+            <div class="hostFont" id="input" style="text-align:left; float:right; width:120px; margin-left:0px;">
+                <p>
+                    <select class="swatch" id="swatchType" style="display:inline;">
+                        <option value="pms" selected> PMS</option>
+                        <option value="cmyk"> CMYK</option>
+                    </select>
+                </p>
+                <p>
+                    <input type="text" id="pmsInput" size="21" style="display:inline;" value="" placeholder="Separate w/commas">
+                </p>
+                <p class="visible">
+                    <input type="checkbox" id="auto" checked><label for="auto"><span></span> Auto</label>
+                </p>
+                <p class="visible" id="channelChecks">
+                    <input type="checkbox" id="cyan" disabled="true"><label for="cyan"><span></span> C</label>
+                    <input type="checkbox" id="magenta" disabled="true"><label for="magenta"><span></span> M</label>
+                    <input type="checkbox" id="yellow" disabled="true"><label for="yellow"><span></span> Y</label>
+                    <input type="checkbox" id="black" disabled="true"><label for="black"><span></span> K</label>
+                </p>
+                <p>
+                    <select class="gamut" id="gamut" style="display:inline;">
+                        <option value="lighten"> Lighten</option>
+                        <option value="midtones" selected> Midtones</option>
+                        <option value="darken"> Darken</option>
+                    </select>
+                </p>
+                <p class="visible">
+                    <input type="text" id="sliderInput" size="1" style="display:inline;" value="5">
+                    <input type="range" id="sliderRange" min="1" max="10" value="5" step="1" onchange="sliderInput.value=value">
+                </p>
+            </div>
+        </div>
+        <div style="clear:both;text-align:right;width:190px;">
+            <button id="pmsSwatch" class="hostButton">Create</button>
+        </div>
+    </body>
+    <script src="js/main_swatchmaker.js"></script>
+</html>
