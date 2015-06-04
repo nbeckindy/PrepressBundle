@@ -60,15 +60,15 @@
                     <Menu>SwatchMaker</Menu>
                     <Geometry>
                         <Size>
-                            <Height>175</Height>
+                            <Height>200</Height>
                             <Width>210</Width>
                         </Size>
                         <MaxSize>
-                            <Height>175</Height>
+                            <Height>200</Height>
                             <Width>210</Width>
                         </MaxSize>
                         <MinSize>
-                            <Height>175</Height>
+                            <Height>200</Height>
                             <Width>210</Width>
                         </MinSize>
                     </Geometry>

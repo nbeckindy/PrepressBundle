@@ -5,9 +5,9 @@ themeManager.init();
 var csInterface = new CSInterface();
 //Assign buttons
 var swatchButton = window.document.getElementById("pmsSwatch");
-var swatchInput = window.document.getElementById("pmsInput");
+var colorInput = window.document.getElementById("pmsInput");
 var swatchTypePMS = window.document.getElementById("swatchType");
-var colorSubmit = window.document.getElementById("pmsInput");
+var eyedrop = window.document.getElementById("eyedrop");
 var autoCheck = window.document.getElementById("auto");
 var cyanCheck = window.document.getElementById("cyan");
 var magentaCheck = window.document.getElementById("magenta");
@@ -44,7 +44,7 @@ xButton.onclick = function(){
 
 //Run swatches() on button click or on pressing Enter with swatch input field active
 swatchButton.onclick = function() { swatches(); }
-swatchInput.onkeyup = function(event) { if(event.keyCode == 13) swatches(); }
+colorInput.onkeyup = function(event) { if(event.keyCode == 13) swatches(); }
 
 //swatches() pulls data entered in all fields and sends it to the appropriate function in the JSX script
 function swatches(){
@@ -59,7 +59,7 @@ function swatches(){
     //Fill any blank parts of array with undefined (which will use defaults)
     if(adjustmentColors.length == 0) adjustmentColors.push(undefined);
     if(adjustmentColors.length == 1) adjustmentColors.push(undefined);
-    var colorsArray = colorSubmit.value.replace(/^\s+/,"").split(/,+\s*/); //Remove leading whitespace, split at commas into an array
+    var colorsArray = colorInput.value.replace(/^\s+/,"").split(/,+\s*/); //Remove leading whitespace, split at commas into an array
     var colorsArrayString = JSON.stringify(colorsArray);
     var adjustmentColorsString = JSON.stringify(adjustmentColors);
     if(swatchTypePMS.value == "pms") {
@@ -68,6 +68,12 @@ function swatches(){
     if(swatchTypePMS.value == "cmyk") {
       csInterface.evalScript('cmykSwatches(' + colorsArrayString + ',\"' + gamut.value + '\",' + stepRange + ',' + adjustmentColorsString + ')');
     }
+}
+
+eyedrop.onclick = function(){
+  csInterface.evalScript('getColorsFromSelection("' + swatchTypePMS.value + '")', function(colorString){
+    colorInput.value = colorString;
+  })
 }
 
 autoCheck.onclick = function(){

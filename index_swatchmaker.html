@@ -37,6 +37,14 @@
                 height: 18px;
                 padding: 4px;
             }
+            textarea {
+                background-color: #a2a2a2;
+                border: 1px solid #2f2f2f;
+                padding: 2px;
+            }
+            button#eyedrop {
+                padding: 0px;
+            }
             ::-webkit-input-placeholder{
                 color: #777777;
             }
@@ -138,6 +146,7 @@
             <div class="hostFont" id="labels" style="text-align:right; float:left; width:65px; margin-right:0px;">
                 <p>Type:</p>
                 <p>Values:</p>
+                <p class="visible"></p>
                 <p class="visible">Channels:</p>
                 <p class="visible"></p>
                 <p class="visible">Gamut:</p>
@@ -151,9 +160,11 @@
                     </select>
                 </p>
                 <p>
-                    <input type="text" id="pmsInput" size="21" style="display:inline;" value="" placeholder="Separate w/commas">
+                    <textarea id="pmsInput" cols="17" rows="3" style="display:inline;" placeholder="Separate colors with commas"></textarea>
+                    <button id="eyedrop" class="hostButton" style="width:20px"><img src="img/eyedrop.png"></button>
                 </p>
-                <p class="visible">
+                <p></p>
+                <p>
                     <input type="checkbox" id="auto" checked><label for="auto"><span></span> Auto</label>
                 </p>
                 <p class="visible" id="channelChecks">
