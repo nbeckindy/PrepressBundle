@@ -47,7 +47,7 @@ var csInterface = new CSInterface(); //CS Interface
 var openFiles = []; //Array just that keeps track of what files are open, so you don't have to loop through LineItem objects
 var allLineItems = []; //Array of LineItem objects, with finishing information for each line item
 var printSettings; //PrintSettings object
-var flyoutObject;
+var flyoutObject = {}; //Flyout menu settings object
 var sourceList = document.getElementById("selectSource"); //<select> field, list of files to process
 var addFilesButton = document.getElementById("add"); //+ button, imports files to sourceList
 var removeFilesButton = document.getElementById("remove"); //- button, removes files from sourceList
@@ -97,28 +97,88 @@ var perimStrokeCheck = document.getElementById("perimStroke");
 var applyButton = document.getElementById("apply");
 var confirmButton = document.getElementById("confirm");
 var cancelButton = document.getElementById("cancel");
+var configPath = csInterface.getSystemPath(SystemPath.USER_DATA) + "/Adobe/Adobe Illustrator 18/en_US/";
 
+//----- INITIALIZATION -----//
+
+var fs = require('fs'); //Node file system
+var path = require('path'); ///Node path
 var xmlhttp = new XMLHttpRequest(); //HTTP Request object
-try {
-  xmlhttp.open("GET", "./js/flyout_default.json", false);
-  xmlhttp.send();
-  flyoutObject = JSON.parse(xmlhttp.responseText); //Parse text data retreived from server as JSON
-} catch(x) {
-  alert(x);
+
+//Check if config files exist (flyout, lineitem, print)
+//If they don't, create them
+fs.exists(configPath + "flyout_config.json", function(exists){
+  //If file does exist, open it and parse the JSON data
+  if (exists){
+    xmlhttp.open("GET", configPath + "flyout_config.json", false);
+    xmlhttp.send();
+    flyoutObject = JSON.parse(xmlhttp.responseText); //Parse text data retreived from server as JSON
+    setFlyout();
+  } else {
+    //If file does not exist, create object and file
+    flyoutObject.clearOnProduceCheck = false;
+    flyoutObject.closeSourceOnProduceCheck = false;
+    flyoutObject.alertOnMaterialCheck = false;
+    var flyoutString = JSON.stringify(flyoutObject);
+    fs.writeFile(configPath + "flyout_config.json", flyoutString, function(err){
+      if (err) throw (err);
+      setFlyout();
+    });
+  }
+});
+fs.exists(configPath + "lineitem_config.json", function(exists){
+  var lineItem = {};
+  //If file does not exist, create object, stringify, create file
+  if (!exists){
+    lineItem.quantity = 1;
+    lineItem.nesting = false;
+    lineItem.cutOffset = [0,0,0,0]; //cut path/artboard offset
+    lineItem.grommetStatus = true;
+    lineItem.grommetSpacing = [24,24,24,24];
+    lineItem.grommetByNumber = false;
+    lineItem.pocketStatus= true;
+    lineItem.pocketSize = [1.25,1.25,1.25,1.25];
+    lineItem.rotation = false;
+    var lineItemString = JSON.stringify(lineItem);
+    fs.writeFile(configPath + "lineitem_config.json", lineItemString, function(err){
+      if (err) throw (err);
+    });
+  }
+});
+fs.exists(configPath + "print_config.json", function(exists){
+  var printSet = {};
+  //If file does not exist, create object, stringify, create file
+  if (!exists){
+    printSet.scale = 1;
+    printSet.regMarkSpacing = 36;
+    printSet.zundCut = true; //cut path/artboard offset
+    printSet.materialWidth = 126;
+    printSet.materialHeight = 50;
+    printSet.rigid = false;
+    printSet.perimPadding = [false, false];
+    printSet.save = false;
+    printSet.closeSource = false;
+    printSet.perimStroke = false;
+    var printSetString = JSON.stringify(printSet);
+    fs.writeFile(configPath + "print_config.json", printSetString, function(err){
+      if (err) throw (err);
+    });
+  }
+});
+
+function setFlyout(){
+  var flyoutXML = '\
+  <Menu> \
+    <MenuItem Id="saveAsDefault" Label="Save Settings as Default" Enabled="false" Checked="false"/> \
+    \
+    <MenuItem Label="---" /> \
+    \
+    <MenuItem Id="clearOnProduce" Label="Clear Fields on Produce" Enabled="true" Checked="' + flyoutObject.clearOnProduceCheck + '"/> \
+    <MenuItem Id="closeSourceOnProduce" Label="Close Source Files on Produce" Enabled="true" Checked="' + flyoutObject.closeSourceOnProduceCheck + '"/> \
+    <MenuItem Id="alertOnMaterial" Label="Alert on Material Discrepancy" Enabled="true" Checked="' + flyoutObject.alertOnMaterialCheck + '"/> \
+  </Menu>'; //settings for flyout menu must be saved as XML
+  csInterface.setPanelFlyoutMenu(flyoutXML); //Activate flyout
 }
-clearOnProduceCheck = flyoutObject.clearOnProduceCheck;
-closeSourceOnProduceCheck = flyoutObject.closeSourceOnProduceCheck;
-alertOnMaterialCheck = flyoutObject.alertOnMaterialCheck;
-var flyoutXML = '\
-<Menu> \
-  <MenuItem Id="saveAsDefault" Label="Save Settings as Default" Enabled="false" Checked="false"/> \
-  \
-  <MenuItem Label="---" /> \
-  \
-  <MenuItem Id="clearOnProduce" Label="Clear Fields on Produce" Enabled="true" Checked="' + clearOnProduceCheck + '"/> \
-  <MenuItem Id="closeSourceOnProduce" Label="Close Source Files on Produce" Enabled="true" Checked="' + closeSourceOnProduceCheck + '"/> \
-  <MenuItem Id="alertOnMaterial" Label="Alert on Material Discrepancy" Enabled="true" Checked="' + alertOnMaterialCheck + '"/> \
-</Menu>'; //settings for flyout menu must be saved as XML
 
 //----- FUNCTIONS -----//
 
@@ -152,7 +212,7 @@ function createLineItem( path ){
   } catch(e) {
     //On failure, get default line item & print settings from local machine
     try {
-      xmlhttp.open("GET", "./js/lineitem_default.json", false);
+      xmlhttp.open("GET", configPath + "lineitem_config.json", false);
       xmlhttp.send();
       lineItemDefault = JSON.parse(xmlhttp.responseText); //Parse text data retreived from server as JSON
     } catch(x) {
@@ -209,10 +269,10 @@ function createLineItem( path ){
       name, //name
       lineItemDefault.quantity, //quantity
       lineItemDefault.nesting, //nesting
-      lineItemDefault.finishedHeight, //finished height
-      lineItemDefault.finishedWidth, //finished width
+      "", //finished height
+      "", //finished width
       lineItemDefault.cutOffset, //cut path/artboard offset
-      lineItemDefault.useDocumentArtboard, //document artboard
+      false, //document artboard
       lineItemDefault.grommetStatus, //grommet status
       lineItemDefault.grommetSpacing, //grommet spacing
       lineItemDefault.grommetByNumber,
@@ -231,7 +291,7 @@ function createPrintSettings(){
   var xmlhttp = new XMLHttpRequest(); //HTTP Request object
   //Load preset print settings from local machine
   try {
-    xmlhttp.open("GET", "./js/printsettings_default.json", false);
+    xmlhttp.open("GET", configPath + "print_config.json", false);
     xmlhttp.send();
     printSettingsDefault = JSON.parse(xmlhttp.responseText); //Parse text data retreived from server as JSON
   } catch(x) {
@@ -467,23 +527,17 @@ function saveAsDefault(){
   updatePrintSettings( printSettings );
   lineItemToString = JSON.stringify(lineItemToString); //stringify line item object to be saved to file
   printSettingsToString = JSON.stringify(printSettings); //stringify print settings object to be saved to file
-  //Load node.js modules for writing to files
-  var fs = require('fs');
-  var path = require('path');
-  var linePath = path.join(__dirname, '/js/lineitem_default.json'); //For some reason the full path is needed
-  fs.writeFileSync(linePath, lineItemToString);
-  var printPath = path.join(__dirname, '/js/printsettings_default.json');
-  fs.writeFileSync(printPath, printSettingsToString);
+  //Use node file system to write to files
+  fs.writeFile(configPath + "lineitem_config.json", lineItemToString);
+  fs.writeFile(configPath + "print_config.json", printSettingsToString);
 }
 
 function saveFlyout( param, state ){
   var flyoutObjectToString;
   flyoutObject[param] = state;
   flyoutObjectToString = JSON.stringify(flyoutObject);
-  var fs = require('fs');
-  var path = require('path');
-  var linePath = path.join(__dirname, '/js/flyout_default.json');
-  fs.writeFileSync(linePath, flyoutObjectToString);
+  //var linePath = path.join(__dirname, '/js/flyout_default.json');
+  fs.writeFileSync(configPath + "flyout_config.json", flyoutObjectToString);
 }
 
 //Returns an array of all selected <option>s in a specified <select> element
@@ -511,7 +565,6 @@ function getSelected(multiList){
   csInterface.evalScript("getOpenFiles()", importFiles);
 });*/
 
-csInterface.setPanelFlyoutMenu(flyoutXML); //Activate flyout
 csInterface.addEventListener("com.adobe.csxs.events.flyoutMenuClicked", function(event){
   if(event.data.menuId == "saveAsDefault") saveAsDefault();
   if(event.data.menuId == "clearOnProduce"){
