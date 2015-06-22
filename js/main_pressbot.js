@@ -40,9 +40,6 @@ function PrintSettings(source, scale, regMarkSpacing, zundCut, materialWidth, ma
 
 //----- GLOBAL VARIABLES & HTML ELEMENTS -----//
 
-var clearOnProduceCheck = false;
-var closeSourceOnProduceCheck = false;
-var alertOnMaterialCheck = false;
 var csInterface = new CSInterface(); //CS Interface
 var openFiles = []; //Array just that keeps track of what files are open, so you don't have to loop through LineItem objects
 var allLineItems = []; //Array of LineItem objects, with finishing information for each line item
@@ -252,7 +249,7 @@ function createLineItem( path ){
       updatePrintFields( printSettings );
     //If printSettings has been defined, check it against JSON data and call out discrepancies
     //Return null if user does not ignore discrepancies
-    } if(printSettings && alertOnMaterialCheck) {
+    } if(printSettings && flyoutObject.alertOnMaterialCheck) {
       if (lineItemExt.t_AttribWidthUOM == "\'" && printSettings.materialWidth != Number(lineItemExt.n_AttribHeight)){
         var override = confirm("Existing material size does not match material size for " + lineItem.name + ". Continue anyway?");
         if(!override) return null;
@@ -308,7 +305,7 @@ function createPrintSettings(){
     printSettingsDefault.rigid || "",
     printSettingsDefault.perimPadding || [],
     printSettingsDefault.save || "",
-    printSettingsDefault.closeSource || "",
+    flyoutObject.closeSourceOnProduceCheck || "",
     printSettingsDefault.perimStroke || ""
   );
   //Update printSettings fields
@@ -468,7 +465,7 @@ function updatePrintSettings( printSettings ){
     printSettings.perimPadding[1] = perimPaddingLR.checked;
     printSettings.perimStroke = perimStrokeCheck.checked;
     printSettings.save = saveCheck.checked;
-    printSettings.closeSource = closeSourceOnProduceCheck;
+    printSettings.closeSource = flyoutObject.closeSourceOnProduceCheck;
   }
 }
 
@@ -568,19 +565,19 @@ function getSelected(multiList){
 csInterface.addEventListener("com.adobe.csxs.events.flyoutMenuClicked", function(event){
   if(event.data.menuId == "saveAsDefault") saveAsDefault();
   if(event.data.menuId == "clearOnProduce"){
-    clearOnProduceCheck = !clearOnProduceCheck;
-    csInterface.updatePanelMenuItem("Clear Fields on Produce", true, clearOnProduceCheck);
-    saveFlyout("clearOnProduceCheck", clearOnProduceCheck);
+    flyoutObject.clearOnProduceCheck = !flyoutObject.clearOnProduceCheck;
+    csInterface.updatePanelMenuItem("Clear Fields on Produce", true, flyoutObject.clearOnProduceCheck);
+    saveFlyout("clearOnProduceCheck", flyoutObject.clearOnProduceCheck);
   }
   if(event.data.menuId == "closeSourceOnProduce"){
-    closeSourceOnProduceCheck = !closeSourceOnProduceCheck;
-    csInterface.updatePanelMenuItem("Close Source Files on Produce", true, closeSourceOnProduceCheck);
-    saveFlyout("closeSourceOnProduceCheck", closeSourceOnProduceCheck);
+    flyoutObject.closeSourceOnProduceCheck = !flyoutObject.closeSourceOnProduceCheck;
+    csInterface.updatePanelMenuItem("Close Source Files on Produce", true, flyoutObject.closeSourceOnProduceCheck);
+    saveFlyout("closeSourceOnProduceCheck", flyoutObject.closeSourceOnProduceCheck);
   }
   if(event.data.menuId == "alertOnMaterial"){
-    alertOnMaterialCheck = !alertOnMaterialCheck;
-    csInterface.updatePanelMenuItem("Alert on Material Discrepancy", true, alertOnMaterialCheck);
-    saveFlyout("alertOnMaterialCheck", alertOnMaterialCheck);
+    flyoutObject.alertOnMaterialCheck = !flyoutObject.alertOnMaterialCheck;
+    csInterface.updatePanelMenuItem("Alert on Material Discrepancy", true, flyoutObject.alertOnMaterialCheck);
+    saveFlyout("alertOnMaterialCheck", flyoutObject.alertOnMaterialCheck);
   }
 });
 
@@ -693,7 +690,7 @@ confirmButton.onclick = function(){
   userInput.push(printSettings);
   jsonToJSX = JSON.stringify(userInput);
   csInterface.evalScript('processFinishing(\'' + jsonToJSX + '\')');
-  if(clearOnProduceCheck) clear();
+  if(flyoutObject.clearOnProduceCheck) clear();
 }
 
 //Call function to clear fields
