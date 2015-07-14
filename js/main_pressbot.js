@@ -833,6 +833,9 @@ confirmButton.onclick = function(){
   userInput.push(allLineItems);
   userInput.push(printSettings);
   jsonToJSX = JSON.stringify(userInput); //Data must be a stringify when sent to JSX file
+
+  console.log(jsonToJSX);
+
   csInterface.evalScript('processFinishing(\'' + jsonToJSX + '\')');
   if(flyoutObject.clearOnProduceCheck) clear();
 }
