@@ -169,6 +169,12 @@
             input[type="checkbox"]:checked + label span:active {
                 background:url(./img/check_on_down.png) left top no-repeat;
             }
+            input[type="checkbox"]:disabled + label {
+                color: #777777;
+            }
+            input[type="checkbox"]:disabled + label span, input[type="checkbox"]:disabled + label span:hover, input[type="checkbox"]:disabled + label span:active{
+                background:url(./img/check_off_down.png) left top no-repeat;
+            }
         </style>
     </head>
     <body class="hostElt">
@@ -236,7 +242,8 @@
             <hr>
             <div>
                 Quantity: <input type="text" id="quantity"><br>
-                <input type="checkbox" id="rotate"><label for="rotate"><span></span> Rotate 90&deg;</label><br>
+                <input type="checkbox" id="rotate"><label for="rotate"><span></span> Rotate 90&deg;</label>
+                <input type="checkbox" id="tab"><label for="tab"><span></span> Add Tab to Cut Path</label><br>
             </div>
             <hr>
             <div style="text-align:center">

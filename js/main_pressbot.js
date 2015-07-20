@@ -5,7 +5,7 @@ themeManager.init();
 //----- CONSTRUCTORS -----//
 
 //LineItem object constructor - this object holds all finishing information for each line item. This will be sent to JSX file on completion.
-function LineItem(path, name, quantity, nesting, finishedHeight, finishedWidth, cutOffset, useDocumentArtboard, grommetStatus, grommetSpacing, grommetByNumber, pocketStatus, pocketSize, rotation, artworkObject) {
+function LineItem(path, name, quantity, nesting, finishedHeight, finishedWidth, cutOffset, useDocumentArtboard, grommetStatus, grommetSpacing, grommetByNumber, pocketStatus, pocketSize, rotation, tab, artworkObject) {
     this.path = path;
     this.name = name;
     this.quantity = quantity;
@@ -20,6 +20,7 @@ function LineItem(path, name, quantity, nesting, finishedHeight, finishedWidth, 
     this.pocketStatus = pocketStatus; //boolean
     this.pocketSize = pocketSize; //array [top, bottom, left, right]
     this.rotation = rotation;
+    this.tab = tab;
     this.artworkObject = artworkObject; //Artwork object for this line item
 }
 
@@ -87,6 +88,7 @@ var pockConstButton = document.getElementById("pockConstrain");
 var pockConstStatus = false;
 var quantityInput = document.getElementById("quantity"); //Quantity input field
 var rotationCheck = document.getElementById("rotate"); //Rotate 90 degrees checkbox
+var tabCheck = document.getElementById("tab"); //Add tab to cut path checkbox
 var applyButton = document.getElementById("apply"); //<button> to apply all Line Item fields to selected LineItem object(s)
 //Print Settings fields
 var matHeightInput = document.getElementById("matHeight"); //Material height, from shopBot; disabled if matType is roll
@@ -139,6 +141,7 @@ fs.exists(configPath + "lineitem_config.json", function(exists){
     lineItem.pocketStatus= true;
     lineItem.pocketSize = [1.25,1.25,1.25,1.25];
     lineItem.rotation = false;
+    lineItem.tab = false;
     var lineItemString = JSON.stringify(lineItem);
     fs.writeFile(configPath + "lineitem_config.json", lineItemString, function(err){
       if (err) throw (err);
@@ -282,6 +285,7 @@ function createLineItem( path ){
       (Number(lineItemExt.n_PocketTop) || Number(lineItemExt.n_PocketBottom) || Number(lineItemExt.n_PocketLeft) || Number(lineItemExt.n_PocketRight)) > 0 ? true : false, //pocket status
       [Number(lineItemExt.n_PocketTop), Number(lineItemExt.n_PocketBottom), Number(lineItemExt.n_PocketLeft), Number(lineItemExt.n_PocketRight)], //pocket size
       false, //rotation
+      false, //tab
       undefined
     );
     //If printSettings has not been defined, do so, initially with default values
@@ -323,6 +327,7 @@ function createLineItem( path ){
       lineItemDefault.pocketStatus, //pocket status
       lineItemDefault.pocketSize, //pocket size
       lineItemDefault.rotation, //rotation
+      lineItemDefault.tab, //tab
       undefined
     );
     //If printSettings has not been defined, do so, with default values
@@ -453,6 +458,7 @@ function updateFields( lineItem ){
     }
     quantityInput.value = lineItem.quantity || "";
     rotationCheck.checked = lineItem.rotation || false;
+    tabCheck.checked = lineItem.tab || false;
   } else {
     finishedDimensions.innerHTML = "";
     offsetTopInput.value = "";
@@ -479,6 +485,7 @@ function updateFields( lineItem ){
     gromHSpacingSelect.value = "distance";
     quantityInput.value = "";
     rotationCheck.checked = false;
+    tabCheck.checked = false;
   }
 }
 
@@ -537,7 +544,16 @@ function updateLineItem( lineItem ){
   lineItem.pocketSize[3] = Number(pockRightInput.value);
   lineItem.pocketStatus = pockCheck.checked;
   lineItem.quantity = Number(quantityInput.value);
-  lineItem.rotation = rotationCheck.checked;
+  if(!rotationCheck.disabled){
+    lineItem.rotation = rotationCheck.checked;
+  } else {
+    lineItem.rotation = false;
+  }
+  if(!tabCheck.disabled){
+    lineItem.tab = tabCheck.checked;
+  } else {
+    lineItem.tab = false;
+  }
 }
 
 /*
@@ -639,22 +655,22 @@ function pocketToggle(){
 */
 
 function saveAsDefault(){
-  var lineItemToString, printSettingsToString; //JSON strings to save to file
+  var lineItem = {}, lineItemToString, printSettingsToString; //JSON strings to save to file
   //Get selected line item
   for(var x=sourceList.length-1;x>=0;x--){
     if(sourceList.options[x].selected){
       for(var z=allLineItems.length-1;z>=0;z--){
         if(sourceList.options[x].value == allLineItems[z].name){
-          lineItemToString = allLineItems[z];
+          lineItem = JSON.parse(JSON.stringify(allLineItems[z])); //Clone lineItem object
           break;
         }
       }
     }
   }
-  lineItemToString.path = "";
-  lineItemToString.name = "";
+  lineItem.path = "";
+  lineItem.name = "";
   updatePrintSettings(); //Apply values in fields to printSettings object
-  lineItemToString = JSON.stringify(lineItemToString); //stringify lineÎtem object to be saved to file
+  lineItemToString = JSON.stringify(lineItem); //stringify lineÎtem object to be saved to file
   printSettingsToString = JSON.stringify(printSettings); //stringify printSettings object to be saved to file
   //Use node file system to write to files
   fs.writeFile(configPath + "lineitem_config.json", lineItemToString);
@@ -965,4 +981,20 @@ gromCheck.onclick = function(){
 
 pockCheck.onclick = function(){
   pocketToggle();
+}
+
+rotationCheck.onclick = function(){
+  if(rotationCheck.checked == true){
+    tabCheck.disabled = true;
+  } else {
+    tabCheck.disabled = false;
+  }
+}
+
+tabCheck.onclick = function(){
+  if(tabCheck.checked == true){
+    rotationCheck.disabled = true;
+  } else {
+    rotationCheck.disabled = false;
+  }
 }
