@@ -47,7 +47,7 @@ var xmlhttp = new XMLHttpRequest(); //HTTP Request object
 var allLineItems = []; //Array of all LineItem objects that have been loaded, updated when "Apply Settings" is selected
 var printSettings; //future PrintSettings object, must remain undefined on declaration
 var flyoutObject = {}; //Flyout menu settings object
-var configPath = csInterface.getSystemPath(SystemPath.USER_DATA) + "/Adobe/Adobe Illustrator 18/en_US/"; //Location in User's Library where config files are saved
+var configPath = csInterface.getSystemPath(SystemPath.USER_DATA) + "/Adobe/Adobe Illustrator 19/en_US/"; //Location in User's Library where config files are saved
 var appVersion = csInterface.hostEnvironment.appVersion; //To be used later, to determine folder when differing versions are used
 
 //The rest of these are just mapping various HTML input elements to variables
@@ -458,7 +458,9 @@ function updateFields( lineItem ){
     }
     quantityInput.value = lineItem.quantity || "";
     rotationCheck.checked = lineItem.rotation || false;
+    if(rotationCheck.checked == false) tabCheck.disabled = false;
     tabCheck.checked = lineItem.tab || false;
+    if(tabCheck.checked == false) rotationCheck.disabled = false;
   } else {
     finishedDimensions.innerHTML = "";
     offsetTopInput.value = "";
@@ -485,7 +487,9 @@ function updateFields( lineItem ){
     gromHSpacingSelect.value = "distance";
     quantityInput.value = "";
     rotationCheck.checked = false;
+    rotationCheck.disabled = false;
     tabCheck.checked = false;
+    tabCheck.disabled = false;
   }
 }
 

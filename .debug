@@ -5,4 +5,9 @@
 			<Host Name="ILST" Port="8080"/>
 		</HostList>
 	</Extension>
+	<Extension Id="com.indyimaging.swatchmaker">
+		<HostList>
+			<Host Name="ILST" Port="8081"/>
+		</HostList>
+	</Extension>
 </ExtensionList>

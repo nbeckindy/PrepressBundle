@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<ExtensionManifest ExtensionBundleId="com.indyimaging" ExtensionBundleName="Prepress Bundle" ExtensionBundleVersion="1.0" Version="5.0">
+<ExtensionManifest ExtensionBundleId="com.indyimaging" ExtensionBundleName="Prepress Bundle" ExtensionBundleVersion="1.0" Version="6.0">
     <ExtensionList>
         <Extension Id="com.indyimaging.pressbot" Version="2.0"/>
         <Extension Id="com.indyimaging.swatchmaker" Version="1.0"/>
     </ExtensionList>
     <ExecutionEnvironment>
         <HostList>
-            <Host Name="ILST" Version="18.0"/>
+            <Host Name="ILST" Version="[18.0,19.9]"/>
         </HostList>
         <LocaleList>
             <Locale Code="All"/>
         </LocaleList>
         <RequiredRuntimeList>
-            <RequiredRuntime Name="CSXS" Version="5.0"/>
+            <RequiredRuntime Name="CSXS" Version="6.0"/>
         </RequiredRuntimeList>
     </ExecutionEnvironment>
     <DispatchInfoList>

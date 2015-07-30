@@ -3,6 +3,7 @@
 themeManager.init();
 //Define CS interface
 var csInterface = new CSInterface();
+var flyoutObject = {}; //Flyout menu settings object
 //Assign buttons
 var swatchButton = window.document.getElementById("pmsSwatch");
 var colorInput = window.document.getElementById("pmsInput");
@@ -41,6 +42,53 @@ xButton.onclick = function(){
   csInterface.requestOpenExtension( extID, params );
   csInterface.closeExtension();
 }*/
+
+/*if(getCookie("showOptions")=="true"){
+  setFlyout("Hide Options");
+  csInterface.resizeContent(210, 200);
+} else {
+  setFlyout("Show Options");
+  csInterface.resizeContent(210, 100);
+}*/
+
+function setCookie(name, value){
+  document.cookie = name + '=' + value + ';';
+}
+
+function getCookie(name){
+  var cname = name + '=';
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') c = c.substring(1);
+    if (c.indexOf(name) == 0) return c.substring(cname.length,c.length);
+    //If no cookie found, set cookie to false, return
+    if (i==ca.length-1 && c.indexOf(name) != 0) setCookie(name, false);
+  }
+  return getCookie(name);
+}
+
+function setFlyout(labelName){
+  var flyoutXML = '\
+  <Menu> \
+    <MenuItem Id="showOptions" Label="' + labelName + '" Enabled="true" Checked="false"/> \
+  </Menu>';
+  csInterface.setPanelFlyoutMenu(flyoutXML);
+}
+
+csInterface.addEventListener("com.adobe.csxs.events.flyoutMenuClicked", function(event){
+  if(event.data.menuId == "showOptions"){
+    setCookie("showOptions", !(getCookie("showOptions")=="true"));
+    //console.log(getCookie("showOptions"));
+    if(getCookie("showOptions")=="true"){
+      setFlyout("Hide Options");
+      csInterface.resizeContent(210, 200);
+    } else {
+      setFlyout("Show Options");
+      csInterface.resizeContent(210, 100);
+    }
+  }
+});
 
 //Run swatches() on button click or on pressing Enter with swatch input field active
 swatchButton.onclick = function() { swatches(); }
