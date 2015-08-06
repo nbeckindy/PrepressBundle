@@ -68,7 +68,7 @@
                             <Width>210</Width>
                         </MaxSize>
                         <MinSize>
-                            <Height>200</Height>
+                            <Height>100</Height>
                             <Width>210</Width>
                         </MinSize>
                     </Geometry>

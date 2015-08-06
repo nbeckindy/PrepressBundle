@@ -18,41 +18,23 @@ var channelChecks = window.document.getElementById("channelChecks");
 var gamut = window.document.getElementById("gamut");
 var sliderInput = window.document.getElementById("sliderInput");
 var sliderRange = window.document.getElementById("sliderRange");
-/*var xButton = window.document.getElementById("x");
 var divLabels = window.document.getElementById("labels");
 var divInput = window.document.getElementById("input");
 
-xButton.onclick = function(){
-  for(var x=0; x<divLabels.children.length; x++){
-    if(divLabels.children[x].className == "visible"){
-      divLabels.children[x].className = "hidden";
-    } else if(divLabels.children[x].className == "hidden"){
-      divLabels.children[x].className = "visible";
-    }
-  }
-  for(var x=0; x<divInput.children.length; x++){
-    if(divInput.children[x].className == "visible"){
-      divInput.children[x].className = "hidden";
-    } else if(divInput.children[x].className == "hidden"){
-      divInput.children[x].className = "visible";
-    }
-  }
-  var extID = "com.indyimaging.swatchmakersmall";
-  var params = {};
-  csInterface.requestOpenExtension( extID, params );
-  csInterface.closeExtension();
-}*/
-
-/*if(getCookie("showOptions")=="true"){
+if(getCookie("showOptions")=="true"){
   setFlyout("Hide Options");
   csInterface.resizeContent(210, 200);
 } else {
   setFlyout("Show Options");
   csInterface.resizeContent(210, 100);
-}*/
+  toggleVisible(); //Options are visible by default when loaded
+}
 
-function setCookie(name, value){
-  document.cookie = name + '=' + value + ';';
+function setCookie(name, value, exDays){
+  var d = new Date();
+  d.setTime(d.getTime() + (exDays*24*60*60*1000));
+  var expires = "expires="+d.toUTCString();
+  document.cookie = name + '=' + value + '; ' + expires;
 }
 
 function getCookie(name){
@@ -78,8 +60,7 @@ function setFlyout(labelName){
 
 csInterface.addEventListener("com.adobe.csxs.events.flyoutMenuClicked", function(event){
   if(event.data.menuId == "showOptions"){
-    setCookie("showOptions", !(getCookie("showOptions")=="true"));
-    //console.log(getCookie("showOptions"));
+    setCookie("showOptions", !(getCookie("showOptions")=="true"), 365);
     if(getCookie("showOptions")=="true"){
       setFlyout("Hide Options");
       csInterface.resizeContent(210, 200);
@@ -87,8 +68,26 @@ csInterface.addEventListener("com.adobe.csxs.events.flyoutMenuClicked", function
       setFlyout("Show Options");
       csInterface.resizeContent(210, 100);
     }
+    toggleVisible();
   }
 });
+
+function toggleVisible(){
+  for(var x=0; x<divLabels.children.length; x++){
+    if(divLabels.children[x].className == "visible"){
+      divLabels.children[x].className = "hidden";
+    } else if(divLabels.children[x].className == "hidden"){
+      divLabels.children[x].className = "visible";
+    }
+  }
+  for(var x=0; x<divInput.children.length; x++){
+    if(divInput.children[x].className == "visible"){
+      divInput.children[x].className = "hidden";
+    } else if(divInput.children[x].className == "hidden"){
+      divInput.children[x].className = "visible";
+    }
+  }
+}
 
 //Run swatches() on button click or on pressing Enter with swatch input field active
 swatchButton.onclick = function() { swatches(); }
