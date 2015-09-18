@@ -119,6 +119,7 @@ function swatches(){
 
 eyedrop.onclick = function(){
   csInterface.evalScript('getColorsFromSelection("' + swatchTypePMS.value + '")', function(colorString){
+    colorString = colorString.replace(",",",\n");
     colorInput.value = colorString;
   })
 }
